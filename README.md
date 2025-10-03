@@ -67,12 +67,12 @@ Los patrones creacionales controlan **cómo se crean los objetos**, evitando aco
   *Justificación*: asegura acceso global, control centralizado y evita inconsistencias de datos.
 
 - **Factory Method (Usuarios y publicaciones)**:  
-  Permitirá crear distintos tipos de usuarios (administrador, estándar, visitante) y publicaciones (perdido, encontrado, en adopción, avistado) sin que el cliente conozca las clases, a través de interfases.  
+  Permitirá crear distintos tipos de usuarios (administrador, estándar, visitante), publicaciones (perdido, encontrado, en adopción, avistado) y formularios sin que el cliente conozca las clases, a través de interfases.  
   *Justificación*: encapsula la creación de objetos y facilita la extensión a futuro.
 
 - **Builder (Formularios de publicación)**:  
-  Útil para construir objetos complejos como publicaciones, donde se combinan múltiples parámetros (foto, especie, raza, ubicación, estado, comentarios).  
-  *Justificación*: permite gran facilidad para armar objetos con muchas combinaciones de parámetros opcionales, como formularios dinámicos con distintos campos, evitando constructores con muchos parámetros.
+  Útil para procesar información compleja que tiene distintos tipos de datos (foto, especie, raza, ubicación, estado, comentarios). El usuario puede cargar información en los formularios y, el procesamiento de la misma, al contener parámetros opcionales puede desarrollarse con un patrón de tipo Builder.
+  *Justificación*: permite gran facilidad para armar objetos con muchas combinaciones de parámetros opcionales, como las respuestas de los usuarios.
 
 ---
 
@@ -85,7 +85,7 @@ Estos patrones ayudan a **conectar, organizar y simplificar las relaciones entre
   *Justificación*: es como un traductor, convierte la interfaz de una clase en otra interfaz que espera el cliente, permite integrar librerías externas sin modificar su código.
 
 - **Facade (Gestión de subsistemas)**:  
-  Se implementará una fachada que proporcione un interfaz unificada de acciones complejas (ejemplo: al publicar mascota: guardar datos, subir imagen, actualizar mapa, enviar notificación).  
+  Se implementará una fachada que proporcione un interfaz unificada de acciones complejas (ejemplo: al publicar mascota se disparan diversas acciones: guardar datos, subir imagen, actualizar mapa, enviar notificación; el usuario no tiene conocimiento de todo este proceso interno porque la interfaz sólo le muestra "el estado de la publicación").  
   *Justificación*: reduce el acoplamiento del cliente con los detalles internos, simplifica la interacción y mejora la legibilidad del sistema.
 
 ---
