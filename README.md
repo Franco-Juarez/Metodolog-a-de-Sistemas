@@ -27,9 +27,9 @@ Esta sección explica cómo levantar el entorno de desarrollo local y garantizar
 
 ### 2.1. Requisitos Previos
 
-1.  **Node.js** (se recomienda usar [nvm](https://github.com/nvm-sh/nvm) o Docker para control de versiones).
+1.  **Node.js**.
 2.  **Gestor de paquetes** NPM.
-3.  Un servidor de **PostgreSQL** disponible.
+3.  Acceso a un proyecto **Supabase** activo.
 
 ### 2.2. Configuración e Instalación de Dependencias
 
@@ -42,10 +42,8 @@ Esta sección explica cómo levantar el entorno de desarrollo local y garantizar
 
 2.  **Instalar dependencias:**
 
-    Para asegurar una **instalación limpia y reproducible** y garantizar que todo el equipo use exactamente las mismas versiones, usamos `npm ci`. Esto es posible gracias a que el `package-lock.json` se mantiene versionado, ideal para reproducibilidad.
-
     ```bash
-    npm ci
+    npm install
     
     ```
 
@@ -165,31 +163,28 @@ Este diagrama ilustra la arquitectura orientada a objetos, incluyendo la jerarqu
 |
 
 
-## 6. Documentación de Arquitectura (Patrones y SOLID)
+## 6. Documentación de Arquitectura (Patrones)
 
-La implementación se guía por la necesidad de crear un código **fácil de entender, mantener y extender**.
+### 6.1 Implementación guiada por la necesidad de crear un código **fácil de entender, mantener y extender**.
+
+Se utilizó la Arquitectura en Capas con **MVC** (Modelo Vista-Controlador) que incluye:
+
+1. Separación de Responsabilidades: El proyecto separa claramente modelos (models/), controladores (controllers/), y vistas, facilitando el mantenimiento y escalabilidad.
+
+2. Implementación de **Patrón Singleton** en **models/DataBase.Class.ts**. Se utilizó para garantizar que exista una única conexión activa a la base de datos en todo el sistema. Esto evita la creación de conexiones múltiples, centraliza la gestión de este recurso y permite controlar la dependencia de infraestructura, impidiendo que el resto de los módulos lo instancien directamente con new.
+
+3. Implementación de **Patrón Builder** en **models/publications/Publication.Builder.ts** porque Es útil para construir objetos complejos como publicaciones, donde se combinan múltiples parámetros (foto, especie, raza, ubicación, estado, comentarios). Separa la lógica de construcción, lo que permite armar objetos con muchas combinaciones de parámetros opcionales, evitando constructores con demasiados parámetros y facilitando formularios dinámicos. En síntesis simplifica la creación de objetos complejos (Publicaciones) y mejora la claridad del código.
+
+4. Escalabilidad: La estructura modular permite agregar nuevos tipos de publicaciones, autores o funcionalidades sin afectar componentes existentes.
+
+5. Mantenibilidad: Cada componente tiene una responsabilidad única y bien definida, reduciendo el acoplamiento y facilitando cambios futuros.
+
+6. Reutilización: Los patrones implementados promueven la reutilización de código y evitan duplicación de lógica.
+
+Esta arquitectura fue elegida porque el dominio del problema requiere flexibilidad para manejar diferentes tipos de entidades manteniendo un código organizado y fácil de entender.
 
 
-
-### 6.1 Patrones y Principios Aplicados
-
-| **Patrón**         | **Archivo(s)**                                     | **Justificación Arquitectónica**                                                                                      | **SOLID** |
-|--------------------|-----------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|-----------|
-| **Singleton**      | `models/DataBase.Class.ts`                          | Centraliza la conexión a BD → evita duplicación y garantiza consistencia.                                              | **DIP**   |
-| **Factory Method** | `models/publications/Publication.Factory.ts`         | Elimina `switch` y permite registrar nuevos tipos de publicaciones sin modificar código existente.                      | **OCP**   |
-| **Builder**        | `models/publications/Publication.Builder.ts`         | Simplifica la creación de objetos complejos (Publicaciones) y mejora la claridad del código.                           | **SRP**   |
-
-
-### 6.2. Principios SOLID Aplicados
-
-| Principio | Dónde se Aplica | Problema que Resuelve (Code Smell) |
-|-----------|------------------|-------------------------------------|
-| **SRP (Responsabilidad Única)** | `models/publications/Publication.Builder.ts`, `models/User.Class.ts`, `controllers/User.Controller.ts` | Evita *God Classes*: cada clase cumple un único propósito. |
-| **DIP (Inversión de Dependencias)** | `models/DataBase.Class.ts` | El patrón Singleton centraliza la conexión a la base de datos, evitando que los módulos de alto nivel (como los servicios y controladores) tengan que instanciar directamente la conexión con new. Esto reduce el acoplamiento y facilita la portabilidad si se cambiara el ORM o gestor de BD. |
-| **OCP (Abierto/Cerrado)** | `models/publications/Publication.Factory.ts`, `models/pets/Pet.Class.ts` | Permite agregar tipos de publicaciones o especies sin modificar las clases existentes. |
-| **ISP (Segregación de Interfaces)** | `models/publications/Publication.interface.ts` | Evita interfaces gordas: cada publicación define solo los campos y métodos necesarios para su rol. |
-
-### 6.3 Clean Code: Cohesión y Legibilidad
+### 6.2 Clean Code: Cohesión y Legibilidad
 1. Cohesión de Responsabilidades, por ejemplo la eliminación de Setters (Inmutabilidad). Al eliminar los setters de las entidades (Pet.Class.ts), se garantiza que el estado de los objetos de dominio es inmutable una vez creados. Esto previene cambios de estado inesperados y simplifica el debugging, lo cual es una práctica clave de Clean Code.
 
 Encapsulamiento del JSON (Builder): El patrón Builder (Publication.Builder.ts) encapsula el proceso de construcción, haciendo que el código del cliente sea más fácil de leer, ya que no tiene que preocuparse por el orden o la validación de los 10+ parámetros del objeto.
@@ -199,7 +194,7 @@ El setup de Husky y Prettier garantiza la uniformidad del código del equipo.
 
 Clean as You Code: El hook pre-commit asegura que el código sea formateado y limpiado antes de que ingrese al historial de Git. Este control automatizado es la defensa más efectiva contra la acumulación de Deuda Técnica en forma de desorden de estilo y errores de sintaxis.
 
-### 6.4. Patrones de Comportamiento (Para Implementar a Futuro)
+### 6.3. Patrones de Comportamiento (Para Implementar a Futuro)
 
 | Patrón    | Dónde se Aplicará                 | Justificación |
 |-----------|------------------------------------|---------------|
