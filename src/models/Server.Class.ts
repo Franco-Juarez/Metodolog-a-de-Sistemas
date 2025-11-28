@@ -49,7 +49,7 @@ export class Server {
     this.app.use(express.urlencoded({ limit: '10mb', extended: true }));
   }
 
-  // Definir rutas
+  // Definir rutas para el servidor
   private routes(): void {
     this.app.get('/', (req, res) => {
       res.send('El servidor está vivo');
