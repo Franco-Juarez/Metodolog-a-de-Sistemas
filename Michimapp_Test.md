@@ -91,13 +91,6 @@ Ejemplo:
 
 curl http://localhost:3000/api/publications/eff2bb49-0571-46eb-9d19-72b3be51341e
 ```
-
-### Desactivar publicación (requiere auth)
-
-``` bash
-curl -X DELETE http://localhost:3000/api/publications/ID_DE_PUBLICACION   -H "Authorization: Bearer TU_TOKEN_AQUI"
-```
-
 ------------------------------------------------------------------------
 
 ## Messages (En desarrollo)
@@ -140,8 +133,6 @@ curl -X PUT http://localhost:3000/api/messages/ID_MENSAJE   -H "Content-Type: ap
 ``` bash
 curl -X DELETE http://localhost:3000/api/messages/ID_MENSAJE   -H "Authorization: Bearer TU_TOKEN_AQUI"
 ```
-
-------------------------------------------------------------------------
 
 ## Notas importantes
 
