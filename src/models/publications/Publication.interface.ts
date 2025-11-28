@@ -1,6 +1,3 @@
-import { User } from "../User.Class";
-import { Location } from "../Location.Class";
-
 export type PublicationType= 'lost' | 'found' | 'sighted' | 'adoption';
 
 export interface IPublication {
