@@ -85,4 +85,39 @@ export abstract class Publication implements IPublication {
         }
         return data;
     }
+    //guarda la publicacion en la base de datos
+    static async save(publication: IPublication): Promise<void> {
+        const { data, error } = await supabase
+            .from('Publication')
+            .insert([{
+                id: publication.id,
+                created_at: publication.createdAt,
+                description: publication.description,
+                is_active: publication.isActive,
+                publication_type: publication.publicationType,
+                location_id: publication.locationId,
+                creator_user_id: publication.creatorUserId,
+                pet_id: publication.petId
+            }])
+            .select()
+            .single();
+
+        if (error) {
+            throw new Error(error.message);
+        }
+    }
+
+    //metodo para actualizar una publicacion
+    static async update(id: string, dataToUpdate: any) {
+        const { data , error } = await supabase
+            .from('Publication')
+            .update(dataToUpdate)
+            .eq('id', id)
+            .select()
+            .single();
+        if (error) {
+            throw new Error(error.message);
+        }
+        return data;
+    }
 }
