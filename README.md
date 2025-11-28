@@ -116,7 +116,9 @@ src/
 │   ├── Publication.Routes.ts
 │   └── User.Routes.ts
 │
-├── app.ts
+├── utils/
+│   └── validators.ts
+│
 └── server.ts
 ```
 
@@ -142,8 +144,7 @@ src/
 |               | GET /api/locations                           | Obtener todas las ubicaciones. |
 |               | PUT /api/locations/:id (auth)                | Actualizar ubicación. |
 |               | DELETE /api/locations/:id (auth)             | Eliminar ubicación. |
-| **Images**    | POST /api/images (auth)                      | Subir imagen en base64. |
-
+|
 
 
 ## 5. Documentación de Arquitectura (Patrones y SOLID)
