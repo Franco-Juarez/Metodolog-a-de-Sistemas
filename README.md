@@ -37,11 +37,11 @@ Esta sección explica cómo levantar el entorno de desarrollo local y garantizar
 
 2.  **Instalar dependencias:**
 
-    Para asegurar una **instalación limpia y reproducible** y garantizar que todo el equipo use exactamente las mismas versiones, usamos `npm ci`. Esto es posible gracias a que el `package-lock.json` se mantiene versionado, asegurando el determinismo del grafo de dependencias.
+    Para asegurar una **instalación limpia y reproducible** y garantizar que todo el equipo use exactamente las mismas versiones, usamos `npm ci`. Esto es posible gracias a que el `package-lock.json` se mantiene versionado, ideal para reproducibilidad.
 
     ```bash
-    # npm ci: instala exactamente lo que dice el package-lock.json (ideal para reproducibilidad).
     npm ci
+    
     ```
 
 3.  **Configurar Variables de Entorno:**
