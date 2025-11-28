@@ -15,10 +15,13 @@ El desarrollo se basa en la aplicación rigurosa de **Patrones de Diseño** y lo
 ### **Tecnologías Clave**
 
 * **Backend:** Node.js, Express.js (TypeScript)
-* **Gestor de BD:** PostgreSQL
-* **ORM/Capa de Persistencia:** Sequelize (**Conceptual**). La implementación actual utiliza el **Cliente de Supabase** como capa de persistencia y servicio de autenticación.
-* **Control de Calidad:** Husky (con hook `pre-commit` para Prettier).
-* **Gestión de Repositorio:** GitHub para gestión de repositorios y CI/CD.
+* **Base de Datos:** PostgreSQL (gestionada por Supabase)
+* **Capa de Persistencia:** Cliente de Supabase
+* **Autenticación:** Supabase Auth + JWT
+* **Validación:** Zod (schemas de validación)
+* **Utilidades:** UUID, CORS
+* **Control de Calidad:** Husky + lint-staged + Prettier (hook `pre-commit`)
+* **Gestión de Repositorio:** GitHub para gestión de repositorios y CI/CD
 ---
 
 ## 2. Guía de Inicio Rápido (Quickstart)
@@ -37,14 +40,13 @@ Esta sección explica cómo levantar el entorno de desarrollo local y garantizar
 
     ```bash
     git clone https://github.com/Franco-Juarez/Metodolog-a-de-Sistemas
-    
+    cd Metodolog-a-de-Sistemas
     ```
 
 2.  **Instalar dependencias:**
 
     ```bash
     npm install
-    
     ```
 
 3.  **Configurar Variables de Entorno:**
@@ -63,12 +65,12 @@ Esta sección explica cómo levantar el entorno de desarrollo local y garantizar
 Para iniciar el servidor en modo desarrollo (con recarga automática):
 
 ```bash
-
-npm run dev 
+npm run dev
 # Esto ejecuta: tsx watch src/server.ts
 ```
 
-Si todo es correcto, se verá el mensaje: Servidor corriendo en http://localhost:3000## 
+Si todo es correcto, se verá el mensaje: ✅ Base de datos conectada
+🚀 Servidor corriendo en http://localhost:3000
 
 ### 2.4. Control de Calidad del Código (Husky + Prettier)
 
@@ -76,7 +78,7 @@ Para garantizar la consistencia del código (estilo uniforme), se configuró Hus
 
 Husky Hook: pre-commit
 
-Propósito: Formatear y asegurar que el código no contenga errores de estilo antes de permitir el commit. Esto es clave para la Prevención de Deuda Técnica  y la Colaboración en equipo (código más mantenible).
+Propósito: Formatear y asegurar que el código no contenga errores de estilo antes de permitir el commit. Esto es clave para la Colaboración en equipo y la creación de un código más mantenible.
 
 ## 3. Estructura del Código Fuente
 
@@ -118,7 +120,7 @@ src/
 │
 ├── routes/
 │   ├── Message.Routes.ts
-│   ├── Publication.Routes.ts
+│   ├── Publications.Routes.ts
 │   └── User.Routes.ts
 │
 ├── utils/
@@ -145,21 +147,19 @@ Este diagrama ilustra la arquitectura orientada a objetos, incluyendo la jerarqu
 |---------------|----------------------------------------------|-------------|
 | **Users**     | POST /api/users/register                     | Registro de usuario. |
 |               | POST /api/users/login                        | Login y obtención de token JWT. |
-|               | (Auth) — token obligatorio                   | Requerido para rutas protegidas. |
+|               | GET /api/users/profile (auth)                | Obtener perfil del usuario autenticado. |
+|               | PUT /api/users/profile (auth)                | Actualizar perfil del usuario. |
+|               | GET /api/users/me/publications (auth)        | Obtener publicaciones del usuario autenticado. |
 | **Publications** | POST /api/publications (auth)             | Crear una publicación (lost, found, sighted, adoption). |
-|               | GET /api/publications                        | Obtener todas las publicaciones. |
-|               | GET /api/publications?filters                | Filtrar por tipo, tamaño, edad, usuario, etc. |
+|               | GET /api/publications                        | Obtener todas las publicaciones activas. |
+|               | GET /api/publications?type&user&age&size     | Filtrar publicaciones por parámetros. |
 |               | GET /api/publications/:id                    | Obtener publicación por ID específico. |
-|               | DELETE /api/publications/:id (auth)          | Desactivar publicación. |
-| **Messages**  | POST /api/messages (auth)                    | Crear mensaje (feature en desarrollo). |
-|               | GET /api/messages/publication/:id            | Obtener mensajes de una publicación. |
+|               | PUT /api/publications/:id (auth)             | Actualizar publicación (descripción, estado). |
+|               | DELETE /api/publications/:id (auth)          | Desactivar publicación (solo el creador). |
+| **Messages**  | POST /api/messages (auth)                    | Crear mensaje/comentario en una publicación. |
+|               | GET /api/messages/publication/:publicationId | Obtener mensajes de una publicación específica. |
 |               | PUT /api/messages/:id (auth)                 | Actualizar mensaje. |
 |               | DELETE /api/messages/:id (auth)              | Eliminar mensaje. |
-| **Locations** | POST /api/locations (auth)                   | Registrar ubicación asociada. |
-|               | GET /api/locations/:id                       | Obtener ubicación por ID. |
-|               | GET /api/locations                           | Obtener todas las ubicaciones. |
-|               | PUT /api/locations/:id (auth)                | Actualizar ubicación. |
-|               | DELETE /api/locations/:id (auth)             | Eliminar ubicación. |
 |
 
 
@@ -175,11 +175,13 @@ Se utilizó la Arquitectura en Capas con **MVC** (Modelo Vista-Controlador) que 
 
 3. Implementación de **Patrón Builder** en **models/publications/Publication.Builder.ts** porque Es útil para construir objetos complejos como publicaciones, donde se combinan múltiples parámetros (foto, especie, raza, ubicación, estado, comentarios). Separa la lógica de construcción, lo que permite armar objetos con muchas combinaciones de parámetros opcionales, evitando constructores con demasiados parámetros y facilitando formularios dinámicos. En síntesis simplifica la creación de objetos complejos (Publicaciones) y mejora la claridad del código.
 
-4. Escalabilidad: La estructura modular permite agregar nuevos tipos de publicaciones, autores o funcionalidades sin afectar componentes existentes.
+4. Implementación de **Patrón Factory Method** en **models/pets/PetFactory.ts** y **models/publications/Publication.Factory.ts**. Este patrón permite crear instancias de diferentes tipos de objetos (Dog/Cat para mascotas, Lost/Found/Sighted/Adoption para publicaciones) sin especificar las clases concretas. El Factory encapsula la lógica de creación y decisión, facilitando la extensibilidad cuando se requiera agregar nuevos tipos (por ejemplo, otras especies de mascotas o nuevos tipos de publicaciones) sin modificar el código existente que los utiliza.
 
-5. Mantenibilidad: Cada componente tiene una responsabilidad única y bien definida, reduciendo el acoplamiento y facilitando cambios futuros.
+5. Escalabilidad: La estructura modular permite agregar nuevos tipos de publicaciones, autores o funcionalidades sin afectar componentes existentes.
 
-6. Reutilización: Los patrones implementados promueven la reutilización de código y evitan duplicación de lógica.
+6. Mantenibilidad: Cada componente tiene una responsabilidad única y bien definida, reduciendo el acoplamiento y facilitando cambios futuros.
+
+7. Reutilización: Los patrones implementados promueven la reutilización de código y evitan duplicación de lógica.
 
 Esta arquitectura fue elegida porque el dominio del problema requiere flexibilidad para manejar diferentes tipos de entidades manteniendo un código organizado y fácil de entender.
 
