@@ -4,6 +4,7 @@ import cors from 'cors';
 import { Database } from './DataBase.Class';
 import userRoutes from '../routes/User.Routes';
 import publicationRoutes from '../routes/Publications.Routes';
+import messageRoutes from '../routes/Message.Routes';
 
 export class Server {
   private app: Application;
@@ -11,6 +12,7 @@ export class Server {
   private apiPaths = {
     users: '/api/users',
     publications: '/api/publications',
+    messages: '/api/messages',
   };
 
   constructor() {
@@ -55,6 +57,7 @@ export class Server {
 
     this.app.use(this.apiPaths.users, userRoutes);
     this.app.use(this.apiPaths.publications, publicationRoutes);
+    this.app.use(this.apiPaths.messages, messageRoutes);
   }
 
   // Iniciar servidor
