@@ -83,13 +83,18 @@ El proyecto sigue una estructura modular diseñada para cumplir con el **SRP** (
 ```txt
 src/
 ├── controllers/
+│   ├── Publication.Controller.ts
 │   └── User.Controller.ts
+│
+├── middlewares/
+│   └── auth.middleware.ts
 │
 ├── models/
 │   ├── pets/
 │   │   ├── Cat.Class.ts
 │   │   ├── Dog.Class.ts
-│   │   └── Pet.Class.ts
+│   │   ├── Pet.Class.ts
+│   │   └── PetFactory.ts
 │   │
 │   ├── publications/
 │   │   ├── Adoption.Class.ts
@@ -101,10 +106,15 @@ src/
 │   │   ├── Publication.interface.ts
 │   │   └── Sighted.Class.ts
 │   │
+│   ├── AuthService.Class.ts
 │   ├── DataBase.Class.ts
 │   ├── Location.Class.ts
 │   ├── Server.Class.ts
 │   └── User.Class.ts
+│
+├── routes/
+│   ├── Publication.Routes.ts
+│   └── User.Routes.ts
 │
 ├── app.ts
 └── server.ts
