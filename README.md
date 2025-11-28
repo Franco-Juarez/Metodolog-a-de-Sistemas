@@ -65,12 +65,12 @@ Esta sección explica cómo levantar el entorno de desarrollo local y garantizar
 Para iniciar el servidor en modo desarrollo (con recarga automática):
 
 ```bash
-# Ejecuta el script 'dev' definido en package.json
+
 npm run dev 
 # Esto ejecuta: tsx watch src/server.ts
 ```
 
-Si todo es correcto, verá el mensaje: Servidor corriendo en http://localhost:3000## 
+Si todo es correcto, se verá el mensaje: Servidor corriendo en http://localhost:3000## 
 
 ### 2.4. Control de Calidad del Código (Husky + Prettier)
 
@@ -131,7 +131,7 @@ src/
 ## 4. Diseño y Diagramas de Arquitectura
 
 ### 4.1. Diagrama de Entidad-Relación (ER)
-El siguiente diagrama define la estructura de la base de datos (tablas y relaciones de cardinalidad) utilizada para la persistencia del proyecto.
+El siguiente diagrama define la estructura de la base de datos (tablas y relaciones de entidad) utilizada para la persistencia del proyecto.
 
 ![Diagrama Entidad-Relación del MVP](./img/Diagrama_ER.png)
 
