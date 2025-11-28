@@ -11,7 +11,18 @@ export abstract class Pet {
     private createdAt: Date;
     private creatorUserId: string;
 
-    constructor(pet_id: string, name: string, breed: string, color: string, size: string, age: number, gender: string, url: string, createdAt?: Date, creatorUserId?: string){
+    constructor(
+        pet_id: string, 
+        name: string, 
+        breed: string, 
+        color: string, 
+        size: string, 
+        age: number, 
+        gender: string, 
+        url: string, 
+        createdAt?: Date, 
+        creatorUserId?: string)
+        {
         this.pet_id = pet_id;
         this.name = name;
         this.breed = breed;
@@ -67,36 +78,4 @@ export abstract class Pet {
     public getFullInfo(): string {
         return `Name: ${this.name}, Breed: ${this.breed}, Color: ${this.color}, Size: ${this.size}, Age: ${this.age}, Gender: ${this.gender}, Url: ${this.url}`;
     }
-
-    public getSpecies(): string {
-        return this.constructor.name; // Devuelve 'Dog' o 'Cat'
-    }
-
-    public abstract validateData(): boolean;
-    
-    public setUrl(newUrl: string): void {
-        this.url = newUrl;
-    }
-    public setID(newID: string): void {
-        this.pet_id = newID;
-    }
-    public setName(newName: string): void {
-        this.name = newName;
-    }
-    public setBreed(newBreed: string): void {
-        this.breed = newBreed;
-    }
-    public setColor(newColor: string): void {
-        this.color = newColor;
-    }
-    public setSize(newSize: string): void {
-        this.size = newSize;
-    }
-    public setAge(newAge: number): void {
-        this.age = newAge;
-    }
-    public setGender(newGender: string): void {
-        this.gender = newGender;
-    }
-
 }

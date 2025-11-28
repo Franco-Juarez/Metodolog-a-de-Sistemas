@@ -1,3 +1,6 @@
+import { Database } from './DataBase.Class';
+const supabase = Database.getInstance().getClient();
+
 // Class para enviar coordenadas y gestionar las ubicaciones
 export class Location {
     private id: string;
@@ -61,5 +64,36 @@ export class Location {
 
     public setReferenceAddress(referenceAddress: string): void {
         this.referenceAddress = referenceAddress;
+    }
+
+    static async create(
+        latitude: number,
+        longitude: number,
+        creatorUserId: string,
+        referenceAddress?: string
+    ): Promise<Location> {
+        const { data, error } = await supabase
+            .from('Location')
+            .insert([{
+                latitude,
+                longitude,
+                creator_user_id: creatorUserId,
+                reference_address: referenceAddress
+            }])
+            .select()
+            .single();
+
+        if (error) {
+            throw new Error(`Error al crear Location: ${error.message}`);
+        }
+
+        return new Location(
+            data.id,
+            data.latitude,
+            data.longitude,
+            data.reference_address || '',
+            new Date(data.created_at),
+            data.creator_user_id
+        );
     }
 }
