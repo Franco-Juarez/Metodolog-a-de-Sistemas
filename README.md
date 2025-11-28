@@ -1,109 +1,135 @@
-# Proyecto Metodologías de Sistemas II: Plataforma de Mascotas Perdidas
+# Plataforma de Mascotas Perdidas (MichiMaPP)
 
-## Grupo 20  
-**Integrantes:**  
-- Canclini Lucía  
-- Rodrigo Alvarez Balboa  
-- Franco Juarez Acherielli  
+Integrantes: Lucía Canclini, Rodrigo Álvarez Balboa, Franco Juárez Acherielli
 
----
+## 1. Introducción y Objetivos
 
-## Introducción
+Este proyecto es una aplicación backend (API REST) desarrollada en **Node.js y TypeScript** que centraliza y organiza información sobre mascotas perdidas, encontradas y en adopción. El objetivo principal es desarrollar una herramienta accesible que aumente la efectividad en la localización de animales.
 
-La pérdida de una mascota es una situación angustiante para cualquier familia. En este contexto, resulta clave aprovechar el intercambio y la circulación de información entre los usuarios, fomentando la participación de la ciudadanía en una tarea colectiva como lo es el cuidado animal.
+El desarrollo se basa en la aplicación rigurosa de **Patrones de Diseño** y los principios **SOLID** para crear un sistema más mantenible, flexible y extensible.
 
-A partir de esta problemática surge la idea de desarrollar una aplicación web que centraliza y organiza la información de animales perdidos, encontrados y avistados. El objetivo es brindar una herramienta accesible, rápida y clara que aumente las posibilidades de reunir a las mascotas con sus familias.
+### **Tecnologías Clave**
 
----
-
-
-## Objetivos
-
-### Objetivo general
-
-Desarrollar una aplicación web que facilite la búsqueda y publicación de mascotas perdidas, mejorando la experiencia del usuario y aumentando la efectividad en la localización de animales.
-
-### Objetivos específicos
-
-- Centralizar la información en una única plataforma dedicada a mascotas perdidas, encontradas, en adopción o avistadas.
-- Implementar filtros y mapas interactivos que agilicen la búsqueda.
-- Incorporar notificaciones automáticas de publicaciones cercanas para mantener alerta al resto de la comunidad.
-- Diseñar un sistema de publicación sencillo que permita subir fotos.
-- Garantizar un proceso de registro rápido y amigable para los usuarios.
+* **Backend:** Node.js, Express.js, Sequelize (TypeScript)
+* **Gestor de BD:** PostgreSQL
+* **Gestión de Repositorio:** GitHub para gestión de repositorios y CI/CD.
 
 ---
 
-## Requerimientos principales
+## 2. Guía de Inicio Rápido (Quickstart)
 
-- Registrar publicación de mascota con foto, datos básicos y ubicación.
-- Modificar y eliminar publicaciones.
-- Buscar y filtrar por criterios (tipo, raza, color, estado).
-- Enviar y recibir notificaciones de mascotas cercanas.
-- Visualizar publicaciones en mapa interactivo.
+Esta sección explica cómo levantar el entorno de desarrollo local y garantizar la **reproducibilidad** del entorno.
+
+### 2.1. Requisitos Previos
+
+1.  **Node.js** (se recomienda usar [nvm](https://github.com/nvm-sh/nvm) o Docker para control de versiones).
+2.  **Gestor de paquetes** NPM.
+3.  Un servidor de **PostgreSQL** disponible.
+
+### 2.2. Configuración e Instalación de Dependencias
+
+1.  **Clonar el repositorio:**
+
+    ```bash
+    git clone https://github.com/Franco-Juarez/Metodolog-a-de-Sistemas
+    
+    ```
+
+2.  **Instalar dependencias:**
+
+    Para asegurar una **instalación limpia y reproducible** y garantizar que todo el equipo use exactamente las mismas versiones, usamos `npm ci`. Esto es posible gracias a que el `package-lock.json` se mantiene versionado, asegurando el determinismo del grafo de dependencias.
+
+    ```bash
+    # npm ci: instala exactamente lo que dice el package-lock.json (ideal para reproducibilidad).
+    npm ci
+    ```
+
+3.  **Configurar Variables de Entorno:**
+
+    Cree un archivo **`.env`** en la raíz del proyecto y complete las variables necesarias.
+
+    ```env
+    # Puerto de la API
+    PORT=3000
+
+    # Credenciales de PostgreSQL
+    DB_HOST=localhost
+    DB_USER=petuser
+    DB_PASS=secret
+    DB_NAME=petfinder_db
+
+    # Claves del cliente Supabase (para simular autenticación)
+    SUPABASE_URL=...
+    SUPABASE_ANON_KEY=...
+    ```
+
+### 2.3. Ejecución
+
+Para iniciar el servidor en modo desarrollo (con recarga automática):
+
+```bash
+# Ejecuta el script 'dev' definido en package.json
+npm run dev 
+# Esto ejecuta: tsx watch src/server.ts
+```
+
+Si todo es correcto, verá el mensaje: Servidor corriendo en http://localhost:3000## 
+
+## 3. Estructura del Código Fuente
+
+El proyecto sigue una estructura modular diseñada para cumplir con el **SRP** (separación de responsabilidades) y modularizar la lógica de los patrones.
+
+#### pedí algunos archivos que tal vez falten crear por los tipos de patrones de diseño usadods
+
+```txt
+src/
+├── config/                  # Archivos de configuración
+├── core/                    # Módulos centrales (Singleton, Interfaces)
+│   ├── Database.ts          # Patrón Singleton (Conexión a BD)
+│   ├── IDatabaseClient.ts   # Interfaz para DIP
+│   └── Server.ts
+├── interfaces/              # Abstracciones (Contratos)
+│   └── IPublication.ts
+├── models/                  # Entidades de dominio
+│   ├── pets/
+│   │   ├── Pet.ts           # Clase base abstracta (Polimorfismo)
+│   │   ├── Cat.ts
+│   │   └── Dog.ts
+│   └── locations/
+│       └── Location.ts
+├── publications/
+│   ├── factory/
+│   │   ├── PublicationBuilder.ts        # Patrón Builder
+│   │   ├── PublicationFactory.ts        # Patrón Factory (Refactorizado para OCP)
+│   │   └── IPublicationConstructor.ts   # Soporte para Factory Registrada
+│   └── types/
+│       ├── Adoption.ts
+│       ├── Found.ts
+│       ├── Lost.ts
+│       └── Sighted.ts
+├── services/
+│   ├── IAuthService.ts
+│   ├── IUserRepository.ts
+│   ├── SupabaseAuthService.ts
+│   ├── SupabaseUserRepository.ts
+│   └── PublicationService.ts
+├── routes/
+│   └── User.Routes.ts
+├── app.ts
+└── server.ts
+```
+
+## 4. Documentación de Arquitectura (Patrones y SOLID)
+
+La implementación se guía por la necesidad de crear un código **fácil de entender, mantener y extender**.
+
+#### hay que continuar explicando lo que se hizo en el codigo
+
 
 ---
 
-## Tecnologías a implementar
+## 🙋‍♂️ Integrantes del Equipo
 
-- **REACT (Typescript)**
-- Herramientas de diseño UI como Bootstrap, MaterialUI o Tailwind.
-- Node.js
-- Express.js + Sequelize
-- PostgreSQL
-- GitHub para gestión de repositorios y CI/CD.
-
----
-
-## Patrones de Diseño
-
-En el desarrollo de la aplicación se aplicarán distintos **patrones de diseño** para mejorar la flexibilidad, escalabilidad y mantenibilidad del sistema. Estos se clasifican en **creacionales**, **estructurales** y **de comportamiento**.
-
-### Patrones Creacionales
-
-Los patrones creacionales controlan **cómo se crean los objetos**, evitando acoplamientos rígidos y facilitando cambios futuros, promoviendo la reutilización de código.
-
-- **Singleton (Base de datos)**:  
-  Se utilizará para garantizar que exista **una única conexión activa** a la base de datos en todo el sistema, evitando la creación de conexiones múltiples a base de datos y centralizando la gestión de este recurso.  
-  *Justificación*: asegura acceso global, control centralizado y evita inconsistencias de datos.
-
-- **Factory Method (Usuarios y publicaciones)**:  
-  Permitirá crear distintos tipos de usuarios (administrador, estándar, visitante), publicaciones (perdido, encontrado, en adopción, avistado) y formularios sin que el cliente conozca las clases, a través de interfases.  
-  *Justificación*: encapsula la creación de objetos y facilita la extensión a futuro.
-
-- **Builder (Formularios de publicación)**:  
-  Útil para procesar información compleja que tiene distintos tipos de datos (foto, especie, raza, ubicación, estado, comentarios). El usuario puede cargar información en los formularios y, el procesamiento de la misma, al contener parámetros opcionales puede desarrollarse con un patrón de tipo Builder.
-  *Justificación*: permite gran facilidad para armar objetos con muchas combinaciones de parámetros opcionales, como las respuestas de los usuarios.
-
----
-
-### Patrones Estructurales
-
-Estos patrones ayudan a **conectar, organizar y simplificar las relaciones entre clases y objetos** para formar estructuras flexibles y fáciles de mantener.
-
-- **Adapter (Mapa con Leaflet)**:  
-  El sistema necesita integrar la librería externa **Leaflet**, cuya clase principal (`L.map`) no coincide con la interfaz esperada. Se utilizará un Adapter que actúe como traductor entre nuestra lógica y la API de Leaflet.  
-  *Justificación*: es como un traductor, convierte la interfaz de una clase en otra interfaz que espera el cliente, permite integrar librerías externas sin modificar su código.
-
-- **Facade (Gestión de subsistemas)**:  
-  Se implementará una fachada que proporcione un interfaz unificada de acciones complejas (ejemplo: al publicar mascota se disparan diversas acciones: guardar datos, subir imagen, actualizar mapa, enviar notificación; el usuario no tiene conocimiento de todo este proceso interno porque la interfaz sólo le muestra "el estado de la publicación").  
-  *Justificación*: reduce el acoplamiento del cliente con los detalles internos, simplifica la interacción y mejora la legibilidad del sistema.
-
----
-
-### Patrones de Comportamiento
-
-Estos patrones definen cómo los objetos **se comunican y reparten responsabilidades**, reduciendo dependencias y facilitando extensiones.
-
-- **Observer (Notificaciones a usuarios)**:  
-  Cada vez que se publique o actualice una mascota (publishers), el sistema notificará automáticamente a los usuarios suscritos en la zona (suscribers).  
-  *Justificación*: desacopla al publicador (sistema) de los suscriptores/observadores (usuarios), permitiendo suscripción/desuscripción dinámica.
-
-- **Strategy (Filtros y ordenamiento de búsquedas)**:  
-  Se usará para aplicar distintas estrategias de ordenamiento (por fecha, ubicación, relevancia) o filtros (por especie, tamaño, estado).  
-  *Justificación*: el algoritnmo se vuelve intercambiable en tiempo de ejecución, permite intercambiar algoritmos sin modificar el contexto, evitando condicionales extensos y favoreciendo extensibilidad.
-
----
-
-## Conclusiones
-
-En un escenario real de uso, una familia que pierde a su perro podría publicar de forma rápida la información junto con fotos y geolocalización; al mismo tiempo, otra persona que lo vea en la calle podría registrarlo como “avistado”, y el sistema generaría una coincidencia inmediata. Este tipo de interacciones reduce de forma significativa el tiempo de búsqueda y aumenta las posibilidades de reencuentro.
+* Canclini Lucía
+* Rodrigo Alvarez Balboa
+* Franco Juarez Acherielli
