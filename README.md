@@ -72,7 +72,11 @@ npm run dev
 Si todo es correcto, se verá el mensaje: ✅ Base de datos conectada
 🚀 Servidor corriendo en http://localhost:3000
 
-### 2.4. Control de Calidad del Código (Husky + Prettier)
+### 2.4. Testing de la API
+
+Para probar las rutas de la API, consulte el archivo **[Michimapp_Test.md](./Michimapp_Test.md)**, donde se encuentran ejemplos de solicitudes HTTP para todas las funcionalidades del sistema (registro, login, publicaciones, mensajes, etc.).
+
+### 2.5. Control de Calidad del Código (Husky + Prettier)
 
 Para garantizar la consistencia del código (estilo uniforme), se configuró Husky para que ejecute automáticamente Prettier en cada git commit.
 
