@@ -1,6 +1,10 @@
-# Plataforma de Mascotas Perdidas (MichiMaPP)
+# Plataforma de Mascotas Perdidas (MichiMapp)
 
-Integrantes: Lucía Canclini, Rodrigo Álvarez Balboa, Franco Juárez Acherielli
+## Integrantes del Grupo 20
+
+* Canclini Lucía
+* Rodrigo Alvarez Balboa
+* Franco Juarez Acherielli
 
 ## 1. Introducción y Objetivos
 
@@ -10,10 +14,11 @@ El desarrollo se basa en la aplicación rigurosa de **Patrones de Diseño** y lo
 
 ### **Tecnologías Clave**
 
-* **Backend:** Node.js, Express.js, Sequelize (TypeScript)
+* **Backend:** Node.js, Express.js (TypeScript)
 * **Gestor de BD:** PostgreSQL
+* **ORM/Capa de Persistencia:** Sequelize (**Conceptual**). La implementación actual utiliza el **Cliente de Supabase** como capa de persistencia y servicio de autenticación.
+* **Control de Calidad:** Husky (con hook `pre-commit` para Prettier).
 * **Gestión de Repositorio:** GitHub para gestión de repositorios y CI/CD.
-
 ---
 
 ## 2. Guía de Inicio Rápido (Quickstart)
@@ -49,18 +54,10 @@ Esta sección explica cómo levantar el entorno de desarrollo local y garantizar
     Cree un archivo **`.env`** en la raíz del proyecto y complete las variables necesarias.
 
     ```env
-    # Puerto de la API
+    SUPABASE_URL=
+    SUPABASE_ANON_KEY=
+    JWT_SECRET=
     PORT=3000
-
-    # Credenciales de PostgreSQL
-    DB_HOST=localhost
-    DB_USER=petuser
-    DB_PASS=secret
-    DB_NAME=petfinder_db
-
-    # Claves del cliente Supabase (para simular autenticación)
-    SUPABASE_URL=...
-    SUPABASE_ANON_KEY=...
     ```
 
 ### 2.3. Ejecución
@@ -75,6 +72,13 @@ npm run dev
 
 Si todo es correcto, verá el mensaje: Servidor corriendo en http://localhost:3000## 
 
+### 2.4. Control de Calidad del Código (Husky + Prettier)
+
+Para garantizar la consistencia del código (estilo uniforme), se configuró Husky para que ejecute automáticamente Prettier en cada git commit.
+
+Husky Hook: pre-commit
+
+Propósito: Formatear y asegurar que el código no contenga errores de estilo antes de permitir el commit. Esto es clave para la Prevención de Deuda Técnica  y la Colaboración en equipo (código más mantenible).
 
 ## 3. Estructura del Código Fuente
 
@@ -83,6 +87,7 @@ El proyecto sigue una estructura modular diseñada para cumplir con el **SRP** (
 ```txt
 src/
 ├── controllers/
+│   ├── Message.Controller.ts
 │   ├── Publication.Controller.ts
 │   └── User.Controller.ts
 │
@@ -109,19 +114,34 @@ src/
 │   ├── AuthService.Class.ts
 │   ├── DataBase.Class.ts
 │   ├── Location.Class.ts
+│   ├── Message.Class.ts
 │   ├── Server.Class.ts
 │   └── User.Class.ts
 │
 ├── routes/
+│   ├── Message.Routes.ts
 │   ├── Publication.Routes.ts
 │   └── User.Routes.ts
 │
-├── app.ts
+├── utils/
+│   └── validators.ts
+│
 └── server.ts
 ```
+## 4. Diseño y Diagramas de Arquitectura
+
+### 4.1. Diagrama de Entidad-Relación (ER)
+El siguiente diagrama define la estructura de la base de datos (tablas y relaciones de cardinalidad) utilizada para la persistencia del proyecto.
+
+![Diagrama Entidad-Relación del MVP](./img/Diagrama_ER.png)
 
 
-## 4. Rutas Principales del Backend
+### 4.2. Diagrama de Clases (UML)
+Este diagrama ilustra la arquitectura orientada a objetos, incluyendo la jerarquía de Polimorfismo y la estructura de los Patrones Creacionales.
+
+![Diagrama UML del Sistema MichiMapp](./img/Diagrama_UML.png)
+
+## 5. Rutas Principales del Backend
 
 | Módulo        | Endpoint / Acción                          | Descripción |
 |---------------|----------------------------------------------|-------------|
@@ -142,17 +162,16 @@ src/
 |               | GET /api/locations                           | Obtener todas las ubicaciones. |
 |               | PUT /api/locations/:id (auth)                | Actualizar ubicación. |
 |               | DELETE /api/locations/:id (auth)             | Eliminar ubicación. |
-| **Images**    | POST /api/images (auth)                      | Subir imagen en base64. |
+|
 
 
-
-## 5. Documentación de Arquitectura (Patrones y SOLID)
+## 6. Documentación de Arquitectura (Patrones y SOLID)
 
 La implementación se guía por la necesidad de crear un código **fácil de entender, mantener y extender**.
 
 
 
-### 5.1 Patrones y Principios Aplicados
+### 6.1 Patrones y Principios Aplicados
 
 | **Patrón**         | **Archivo(s)**                                     | **Justificación Arquitectónica**                                                                                      | **SOLID** |
 |--------------------|-----------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|-----------|
@@ -161,16 +180,26 @@ La implementación se guía por la necesidad de crear un código **fácil de ent
 | **Builder**        | `models/publications/Publication.Builder.ts`         | Simplifica la creación de objetos complejos (Publicaciones) y mejora la claridad del código.                           | **SRP**   |
 
 
-### 5.2. Principios SOLID Aplicados
+### 6.2. Principios SOLID Aplicados
 
 | Principio | Dónde se Aplica | Problema que Resuelve (Code Smell) |
 |-----------|------------------|-------------------------------------|
 | **SRP (Responsabilidad Única)** | `models/publications/Publication.Builder.ts`, `models/User.Class.ts`, `controllers/User.Controller.ts` | Evita *God Classes*: cada clase cumple un único propósito. |
-| **DIP (Inversión de Dependencias)** | `models/DataBase.Class.ts` + interfaces (si agregás `IDatabase` luego) | Evita dependencia de implementaciones concretas → fácil de testear y desacoplado. |
+| **DIP (Inversión de Dependencias)** | `models/DataBase.Class.ts` | El patrón Singleton centraliza la conexión a la base de datos, evitando que los módulos de alto nivel (como los servicios y controladores) tengan que instanciar directamente la conexión con new. Esto reduce el acoplamiento y facilita la portabilidad si se cambiara el ORM o gestor de BD. |
 | **OCP (Abierto/Cerrado)** | `models/publications/Publication.Factory.ts`, `models/pets/Pet.Class.ts` | Permite agregar tipos de publicaciones o especies sin modificar las clases existentes. |
-| **ISP (Segregación de Interfaces)** | (Si agregás interfaces dedicadas) `models/publications/Publication.interface.ts` | Evita interfaces gordas: cada contrato define solo lo necesario. |
+| **ISP (Segregación de Interfaces)** | `models/publications/Publication.interface.ts` | Evita interfaces gordas: cada publicación define solo los campos y métodos necesarios para su rol. |
 
-### 5.3. Patrones de Comportamiento (Interacción)
+### 6.3 Clean Code: Cohesión y Legibilidad
+1. Cohesión de Responsabilidades, por ejemplo la eliminación de Setters (Inmutabilidad). Al eliminar los setters de las entidades (Pet.Class.ts), se garantiza que el estado de los objetos de dominio es inmutable una vez creados. Esto previene cambios de estado inesperados y simplifica el debugging, lo cual es una práctica clave de Clean Code.
+
+Encapsulamiento del JSON (Builder): El patrón Builder (Publication.Builder.ts) encapsula el proceso de construcción, haciendo que el código del cliente sea más fácil de leer, ya que no tiene que preocuparse por el orden o la validación de los 10+ parámetros del objeto.
+
+2. Legibilidad y Uniformidad (Prettier/Husky)
+El setup de Husky y Prettier garantiza la uniformidad del código del equipo.
+
+Clean as You Code: El hook pre-commit asegura que el código sea formateado y limpiado antes de que ingrese al historial de Git. Este control automatizado es la defensa más efectiva contra la acumulación de Deuda Técnica en forma de desorden de estilo y errores de sintaxis.
+
+### 6.4. Patrones de Comportamiento (Para Implementar a Futuro)
 
 | Patrón    | Dónde se Aplicará                 | Justificación |
 |-----------|------------------------------------|---------------|
@@ -179,9 +208,3 @@ La implementación se guía por la necesidad de crear un código **fácil de ent
 
 
 ---
-
-## Integrantes del Equipo
-
-* Canclini Lucía
-* Rodrigo Alvarez Balboa
-* Franco Juarez Acherielli

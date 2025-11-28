@@ -6,7 +6,6 @@
 - [Publications](#publications)
 - [Messages](#messages)
 - [Locations](#locations)
-- [Images](#images)
 - [Notas importantes](#notas-importantes)
 
 ------------------------------------------------------------------------
@@ -140,18 +139,6 @@ curl -X PUT http://localhost:3000/api/messages/ID_MENSAJE   -H "Content-Type: ap
 
 ``` bash
 curl -X DELETE http://localhost:3000/api/messages/ID_MENSAJE   -H "Authorization: Bearer TU_TOKEN_AQUI"
-```
-
-------------------------------------------------------------------------
-
-## Images
-
-### Subir imagen (requiere auth)
-
-``` bash
-curl -X POST http://localhost:3000/api/images   -H "Content-Type: application/json"   -H "Authorization: Bearer TU_TOKEN_AQUI"   -d '{
-    "image": "data:image/jpeg;base64,/9j/4AAQSkZJRg..."
-  }'
 ```
 
 ------------------------------------------------------------------------
