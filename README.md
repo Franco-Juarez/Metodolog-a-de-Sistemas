@@ -80,8 +80,6 @@ Si todo es correcto, verá el mensaje: Servidor corriendo en http://localhost:30
 
 El proyecto sigue una estructura modular diseñada para cumplir con el **SRP** (separación de responsabilidades) y modularizar la lógica de los patrones.
 
-#### pedí algunos archivos que tal vez falten crear por los tipos de patrones de diseño usadods
-
 ```txt
 src/
 ├── controllers/
