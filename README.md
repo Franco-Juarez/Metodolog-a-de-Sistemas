@@ -14,10 +14,11 @@ El desarrollo se basa en la aplicación rigurosa de **Patrones de Diseño** y lo
 
 ### **Tecnologías Clave**
 
-* **Backend:** Node.js, Express.js, Sequelize (TypeScript)
+* **Backend:** Node.js, Express.js (TypeScript)
 * **Gestor de BD:** PostgreSQL
+* **ORM/Capa de Persistencia:** Sequelize (**Conceptual**). La implementación actual utiliza el **Cliente de Supabase** como capa de persistencia y servicio de autenticación.
+* **Control de Calidad:** Husky (con hook `pre-commit` para Prettier).
 * **Gestión de Repositorio:** GitHub para gestión de repositorios y CI/CD.
-* **ORM/Capa de Persistencia:** Sequelize **(Conceptual)**. La implementación actual utiliza la **API de Supabase** como capa de persistencia y servicio de autenticación.
 ---
 
 ## 2. Guía de Inicio Rápido (Quickstart)
@@ -127,9 +128,20 @@ src/
 │
 └── server.ts
 ```
+## 4. Diseño y Diagramas de Arquitectura
+
+### 4.1. Diagrama de Entidad-Relación (ER)
+El siguiente diagrama define la estructura de la base de datos (tablas y relaciones de cardinalidad) utilizada para la persistencia del proyecto.
+
+![Diagrama Entidad-Relación del MVP](./img/Diagrama_ER.png)
 
 
-## 4. Rutas Principales del Backend
+### 4.2. Diagrama de Clases (UML)
+Este diagrama ilustra la arquitectura orientada a objetos, incluyendo la jerarquía de Polimorfismo y la estructura de los Patrones Creacionales.
+
+![Diagrama UML del Sistema MichiMapp](./img/Diagrama_UML.png)
+
+## 5. Rutas Principales del Backend
 
 | Módulo        | Endpoint / Acción                          | Descripción |
 |---------------|----------------------------------------------|-------------|
@@ -153,13 +165,13 @@ src/
 |
 
 
-## 5. Documentación de Arquitectura (Patrones y SOLID)
+## 6. Documentación de Arquitectura (Patrones y SOLID)
 
 La implementación se guía por la necesidad de crear un código **fácil de entender, mantener y extender**.
 
 
 
-### 5.1 Patrones y Principios Aplicados
+### 6.1 Patrones y Principios Aplicados
 
 | **Patrón**         | **Archivo(s)**                                     | **Justificación Arquitectónica**                                                                                      | **SOLID** |
 |--------------------|-----------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|-----------|
@@ -168,7 +180,7 @@ La implementación se guía por la necesidad de crear un código **fácil de ent
 | **Builder**        | `models/publications/Publication.Builder.ts`         | Simplifica la creación de objetos complejos (Publicaciones) y mejora la claridad del código.                           | **SRP**   |
 
 
-### 5.2. Principios SOLID Aplicados
+### 6.2. Principios SOLID Aplicados
 
 | Principio | Dónde se Aplica | Problema que Resuelve (Code Smell) |
 |-----------|------------------|-------------------------------------|
@@ -177,7 +189,7 @@ La implementación se guía por la necesidad de crear un código **fácil de ent
 | **OCP (Abierto/Cerrado)** | `models/publications/Publication.Factory.ts`, `models/pets/Pet.Class.ts` | Permite agregar tipos de publicaciones o especies sin modificar las clases existentes. |
 | **ISP (Segregación de Interfaces)** | `models/publications/Publication.interface.ts` | Evita interfaces gordas: cada publicación define solo los campos y métodos necesarios para su rol. |
 
-### 5.3 Clean Code: Cohesión y Legibilidad
+### 6.3 Clean Code: Cohesión y Legibilidad
 1. Cohesión de Responsabilidades, por ejemplo la eliminación de Setters (Inmutabilidad). Al eliminar los setters de las entidades (Pet.Class.ts), se garantiza que el estado de los objetos de dominio es inmutable una vez creados. Esto previene cambios de estado inesperados y simplifica el debugging, lo cual es una práctica clave de Clean Code.
 
 Encapsulamiento del JSON (Builder): El patrón Builder (Publication.Builder.ts) encapsula el proceso de construcción, haciendo que el código del cliente sea más fácil de leer, ya que no tiene que preocuparse por el orden o la validación de los 10+ parámetros del objeto.
@@ -187,7 +199,7 @@ El setup de Husky y Prettier garantiza la uniformidad del código del equipo.
 
 Clean as You Code: El hook pre-commit asegura que el código sea formateado y limpiado antes de que ingrese al historial de Git. Este control automatizado es la defensa más efectiva contra la acumulación de Deuda Técnica en forma de desorden de estilo y errores de sintaxis.
 
-### 5.4. Patrones de Comportamiento (Para Implementar a Futuro)
+### 6.4. Patrones de Comportamiento (Para Implementar a Futuro)
 
 | Patrón    | Dónde se Aplicará                 | Justificación |
 |-----------|------------------------------------|---------------|
