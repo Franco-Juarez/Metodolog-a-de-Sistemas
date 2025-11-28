@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { PublicationController } from '../controllers/publication.Controller';
+import { PublicationController } from '../controllers/Publication.Controller';
 import { authenticateToken } from '../middlewares/auth.middleware';
 const router = Router();
 
