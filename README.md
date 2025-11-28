@@ -75,6 +75,7 @@ npm run dev
 
 Si todo es correcto, verá el mensaje: Servidor corriendo en http://localhost:3000## 
 
+
 ## 3. Estructura del Código Fuente
 
 El proyecto sigue una estructura modular diseñada para cumplir con el **SRP** (separación de responsabilidades) y modularizar la lógica de los patrones.
@@ -83,52 +84,95 @@ El proyecto sigue una estructura modular diseñada para cumplir con el **SRP** (
 
 ```txt
 src/
-├── config/                  # Archivos de configuración
-├── core/                    # Módulos centrales (Singleton, Interfaces)
-│   ├── Database.ts          # Patrón Singleton (Conexión a BD)
-│   ├── IDatabaseClient.ts   # Interfaz para DIP
-│   └── Server.ts
-├── interfaces/              # Abstracciones (Contratos)
-│   └── IPublication.ts
-├── models/                  # Entidades de dominio
+├── controllers/
+│   └── User.Controller.ts
+│
+├── models/
 │   ├── pets/
-│   │   ├── Pet.ts           # Clase base abstracta (Polimorfismo)
-│   │   ├── Cat.ts
-│   │   └── Dog.ts
-│   └── locations/
-│       └── Location.ts
-├── publications/
-│   ├── factory/
-│   │   ├── PublicationBuilder.ts        # Patrón Builder
-│   │   ├── PublicationFactory.ts        # Patrón Factory (Refactorizado para OCP)
-│   │   └── IPublicationConstructor.ts   # Soporte para Factory Registrada
-│   └── types/
-│       ├── Adoption.ts
-│       ├── Found.ts
-│       ├── Lost.ts
-│       └── Sighted.ts
-├── services/
-│   ├── IAuthService.ts
-│   ├── IUserRepository.ts
-│   ├── SupabaseAuthService.ts
-│   ├── SupabaseUserRepository.ts
-│   └── PublicationService.ts
-├── routes/
-│   └── User.Routes.ts
+│   │   ├── Cat.Class.ts
+│   │   ├── Dog.Class.ts
+│   │   └── Pet.Class.ts
+│   │
+│   ├── publications/
+│   │   ├── Adoption.Class.ts
+│   │   ├── Found.Class.ts
+│   │   ├── Lost.Class.ts
+│   │   ├── Publication.Builder.ts
+│   │   ├── Publication.Class.ts
+│   │   ├── Publication.Factory.ts
+│   │   ├── Publication.interface.ts
+│   │   └── Sighted.Class.ts
+│   │
+│   ├── DataBase.Class.ts
+│   ├── Location.Class.ts
+│   ├── Server.Class.ts
+│   └── User.Class.ts
+│
 ├── app.ts
 └── server.ts
 ```
 
-## 4. Documentación de Arquitectura (Patrones y SOLID)
+
+## 4. Rutas Principales del Backend
+
+| Módulo        | Endpoint / Acción                          | Descripción |
+|---------------|----------------------------------------------|-------------|
+| **Users**     | POST /api/users/register                     | Registro de usuario. |
+|               | POST /api/users/login                        | Login y obtención de token JWT. |
+|               | (Auth) — token obligatorio                   | Requerido para rutas protegidas. |
+| **Publications** | POST /api/publications (auth)             | Crear una publicación (lost, found, sighted, adoption). |
+|               | GET /api/publications                        | Obtener todas las publicaciones. |
+|               | GET /api/publications?filters                | Filtrar por tipo, tamaño, edad, usuario, etc. |
+|               | GET /api/publications/:id                    | Obtener publicación por ID específico. |
+|               | DELETE /api/publications/:id (auth)          | Desactivar publicación. |
+| **Messages**  | POST /api/messages (auth)                    | Crear mensaje (feature en desarrollo). |
+|               | GET /api/messages/publication/:id            | Obtener mensajes de una publicación. |
+|               | PUT /api/messages/:id (auth)                 | Actualizar mensaje. |
+|               | DELETE /api/messages/:id (auth)              | Eliminar mensaje. |
+| **Locations** | POST /api/locations (auth)                   | Registrar ubicación asociada. |
+|               | GET /api/locations/:id                       | Obtener ubicación por ID. |
+|               | GET /api/locations                           | Obtener todas las ubicaciones. |
+|               | PUT /api/locations/:id (auth)                | Actualizar ubicación. |
+|               | DELETE /api/locations/:id (auth)             | Eliminar ubicación. |
+| **Images**    | POST /api/images (auth)                      | Subir imagen en base64. |
+
+
+
+## 5. Documentación de Arquitectura (Patrones y SOLID)
 
 La implementación se guía por la necesidad de crear un código **fácil de entender, mantener y extender**.
 
-#### hay que continuar explicando lo que se hizo en el codigo
+
+
+### 5.1 Patrones y Principios Aplicados
+
+| **Patrón**         | **Archivo(s)**                                     | **Justificación Arquitectónica**                                                                                      | **SOLID** |
+|--------------------|-----------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|-----------|
+| **Singleton**      | `models/DataBase.Class.ts`                          | Centraliza la conexión a BD → evita duplicación y garantiza consistencia.                                              | **DIP**   |
+| **Factory Method** | `models/publications/Publication.Factory.ts`         | Elimina `switch` y permite registrar nuevos tipos de publicaciones sin modificar código existente.                      | **OCP**   |
+| **Builder**        | `models/publications/Publication.Builder.ts`         | Simplifica la creación de objetos complejos (Publicaciones) y mejora la claridad del código.                           | **SRP**   |
+
+
+### 5.2. Principios SOLID Aplicados
+
+| Principio | Dónde se Aplica | Problema que Resuelve (Code Smell) |
+|-----------|------------------|-------------------------------------|
+| **SRP (Responsabilidad Única)** | `models/publications/Publication.Builder.ts`, `models/User.Class.ts`, `controllers/User.Controller.ts` | Evita *God Classes*: cada clase cumple un único propósito. |
+| **DIP (Inversión de Dependencias)** | `models/DataBase.Class.ts` + interfaces (si agregás `IDatabase` luego) | Evita dependencia de implementaciones concretas → fácil de testear y desacoplado. |
+| **OCP (Abierto/Cerrado)** | `models/publications/Publication.Factory.ts`, `models/pets/Pet.Class.ts` | Permite agregar tipos de publicaciones o especies sin modificar las clases existentes. |
+| **ISP (Segregación de Interfaces)** | (Si agregás interfaces dedicadas) `models/publications/Publication.interface.ts` | Evita interfaces gordas: cada contrato define solo lo necesario. |
+
+### 5.3. Patrones de Comportamiento (Interacción)
+
+| Patrón    | Dónde se Aplicará                 | Justificación |
+|-----------|------------------------------------|---------------|
+| **Observer** | Módulo de Notificaciones | El sistema notificará automáticamente a los usuarios suscritos (Observers) cuando haya una nueva publicación (Subject). Esto permite una relación dinámica y desacoplada. |
+| **Strategy** | Módulo de Búsquedas y Filtros | Permite aplicar distintas estrategias de ordenamiento o filtros. El algoritmo es intercambiable en tiempo de ejecución sin modificar la clase principal de búsqueda. |
 
 
 ---
 
-## 🙋‍♂️ Integrantes del Equipo
+## Integrantes del Equipo
 
 * Canclini Lucía
 * Rodrigo Alvarez Balboa
