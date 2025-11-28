@@ -43,7 +43,7 @@ export abstract class Publication implements IPublication {
     static async disable(id: string) {
         const { error } = await supabase
             .from('Publication')
-            .update({ isActive: false })
+            .update({ is_active: false })
             .eq('id', id);
         if (error) {
             throw new Error(error.message);
@@ -56,15 +56,15 @@ export abstract class Publication implements IPublication {
 
     static async findAll(filters: { type?: string; userId?: string; age?: string; size?: string } = {}) {
         // traer todas las publicaciones activas
-        let query = supabase.from('Publication').select('*, Pet!inner(*)').eq('isActive', true);
+        let query = supabase.from('Publication').select('*, Pet!inner(*)').eq('is_active', true);
 
         // DICCIONARIO DE MAPEO:
         // se define qué filtro corresponde a qué columna en Supabase.
         // si se agregan mas filtros van aca
         const filterMapping: Record<string, string> = {
-            type: 'publication-type',
-            userId: 'creator-user-id',
-            age: 'Pet.age', 
+            type: 'publication_type',
+            userId: 'creator_user_id',
+            age: 'Pet.age',
             size: 'Pet.size'
         };
 

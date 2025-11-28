@@ -87,6 +87,10 @@ curl "http://localhost:3000/api/publications?type=lost&size=Grande&age=3"
 
 ``` bash
 curl http://localhost:3000/api/publications/ID_DE_PUBLICACION
+
+Ejemplo:
+
+curl http://localhost:3000/api/publications/eff2bb49-0571-46eb-9d19-72b3be51341e
 ```
 
 ### Desactivar publicación (requiere auth)

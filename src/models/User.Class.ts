@@ -1,14 +1,16 @@
 //Class que maneja la lógica de creación de usuarios
 import { Database } from './DataBase.Class';
 import { User as SupabaseUser } from '@supabase/supabase-js';
-//faltaria crear databaseClass para manejar la conexión
 
-const supabase = Database.getInstance().getClient();
 export class User {
+    private get supabase() {
+        return Database.getInstance().getClient();
+    }
+
     //metodos d AUTENTICACION ----------------------------------------
     //metodo par registrar usuarios
     async register(email: string, password: string): Promise<SupabaseUser> {
-        const { data, error } = await supabase.auth.signUp({
+        const { data, error } = await this.supabase.auth.signUp({
             email: email,
             password: password,
         });
@@ -25,7 +27,7 @@ export class User {
     //metodo para loguear usuarios
     async login(email: string, password: string) {
         console.log('Intentando iniciar sesión con:', email);
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await this.supabase.auth.signInWithPassword({
             email: email,
             password: password,
         });
@@ -39,7 +41,7 @@ export class User {
     //metodo para cerrar sesión
     async logout() {
         console.log('Cerrando sesión');
-        const { error } = await supabase.auth.signOut();
+        const { error } = await this.supabase.auth.signOut();
         if (error) {
             console.error('Error al cerrar sesión:', error.message);
         } else {
@@ -50,7 +52,7 @@ export class User {
     //metodos dde PERFIL----------------------------------------
     // met para actualizar el perfil del usuario
     async updateProfile(userId: string, profileData: { username?: string; user_lastname?: string; phone?: string }) {
-        const { data, error } = await supabase
+        const { data, error } = await this.supabase
             .from('users')
             .update(profileData)
             .eq('id', userId);
@@ -64,7 +66,7 @@ export class User {
 
     //metodo para obtener el perfil del usuario
     async getProfile(userId: string) {
-        const { data, error } = await supabase
+        const { data, error } = await this.supabase
             .from('users')
             .select('*')
             .eq('id', userId)
