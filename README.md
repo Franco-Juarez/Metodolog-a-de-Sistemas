@@ -21,7 +21,7 @@ El desarrollo se basa en la aplicación rigurosa de **Patrones de Diseño** y lo
 * **Validación:** Zod (schemas de validación)
 * **Utilidades:** UUID, CORS
 * **Control de Calidad:** Husky + lint-staged + Prettier (hook `pre-commit`)
-* **Gestión de Repositorio:** GitHub para gestión de repositorios y CI/CD
+* **Gestión de Repositorio:** GitHub para gestión de repositorios.
 ---
 
 ## 2. Guía de Inicio Rápido (Quickstart)
