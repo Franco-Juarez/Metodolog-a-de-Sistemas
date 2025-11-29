@@ -5,7 +5,6 @@
 - [Users](#users)
 - [Publications](#publications)
 - [Messages](#messages)
-- [Locations](#locations)
 - [Notas importantes](#notas-importantes)
 
 ------------------------------------------------------------------------

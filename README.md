@@ -158,8 +158,6 @@ Este diagrama ilustra la arquitectura orientada a objetos, incluyendo la jerarqu
 |               | GET /api/publications                        | Obtener todas las publicaciones activas. |
 |               | GET /api/publications?type&user&age&size     | Filtrar publicaciones por parámetros. |
 |               | GET /api/publications/:id                    | Obtener publicación por ID específico. |
-|               | PUT /api/publications/:id (auth)             | Actualizar publicación (descripción, estado). |
-|               | DELETE /api/publications/:id (auth)          | Desactivar publicación (solo el creador). |
 | **Messages**  | POST /api/messages (auth)                    | Crear mensaje/comentario en una publicación. |
 |               | GET /api/messages/publication/:publicationId | Obtener mensajes de una publicación específica. |
 |               | PUT /api/messages/:id (auth)                 | Actualizar mensaje. |
