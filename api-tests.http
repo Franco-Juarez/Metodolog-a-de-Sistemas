@@ -5,9 +5,9 @@
 
 # IMPORTANTE: Después de hacer login o register, copiá el access_token de la respuesta
 # y pegalo en la variable de abajo (reemplazá el texto "TU_TOKEN_AQUI")
-@token = eyJhbGciOiJIUzI1NiIsImtpZCI6IkxxSzRLTFBYL0tVWUl6dHgiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3FtbWJqc2lweW1iYnhubnhmaWJoLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiJlODliMWM1YS0zNjk5LTQyYjMtYjNkYi1jZjAzMmE1NjhlMDQiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzY0MzkwOTUyLCJpYXQiOjE3NjQzODczNTIsImVtYWlsIjoidGVzdDNAZWplbXBsby5jb20iLCJwaG9uZSI6IiIsImFwcF9tZXRhZGF0YSI6eyJwcm92aWRlciI6ImVtYWlsIiwicHJvdmlkZXJzIjpbImVtYWlsIl19LCJ1c2VyX21ldGFkYXRhIjp7ImVtYWlsIjoidGVzdDNAZWplbXBsby5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGhvbmVfdmVyaWZpZWQiOmZhbHNlLCJzdWIiOiJlODliMWM1YS0zNjk5LTQyYjMtYjNkYi1jZjAzMmE1NjhlMDQifSwicm9sZSI6ImF1dGhlbnRpY2F0ZWQiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTc2NDM4NzM1Mn1dLCJzZXNzaW9uX2lkIjoiYTA1MmQ2OWMtYjU3MC00ZmM1LTg0MGEtNTEwNjRkNzI0N2JhIiwiaXNfYW5vbnltb3VzIjpmYWxzZX0.VCiAypoO2pls_ev0TYZXPZQEWkj_AdA83J5o305z_sA
+@token = TU_TOKEN_AQUI
 # Y también guardá el ID de la publicación que crees para los tests de update/delete
-@publicationId = d76c3761-9b23-4141-a973-c0b19101d7f0
+@publicationId = ID_PUBLICACIÓN
 
 ###############################################
 # AUTENTICACIÓN

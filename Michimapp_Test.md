@@ -1,5 +1,9 @@
 # Ejemplos de Testing de API - MichiMapp Backend
 
+## Métodos de prueba
+
+Este documento muestra ejemplos usando `curl`, pero también puedes usar el archivo [api-tests.http](api-tests.http) con la extensión **REST Client** de VS Code para ejecutar las consultas de forma más cómoda.
+
 ## Índice
 
 - [Users](#users)
@@ -8,13 +12,13 @@
 - [Locations](#locations)
 - [Notas importantes](#notas-importantes)
 
-------------------------------------------------------------------------
+---
 
 ## Users
 
 ### Registro de usuario
 
-``` bash
+```bash
 curl -X POST http://localhost:3000/api/users/register   -H "Content-Type: application/json"   -d '{
     "email": "usuario@example.com",
     "password": "password123",
@@ -24,7 +28,7 @@ curl -X POST http://localhost:3000/api/users/register   -H "Content-Type: applic
 
 ### Login
 
-``` bash
+```bash
 curl -X POST http://localhost:3000/api/users/login   -H "Content-Type: application/json"   -d '{
     "email": "test2@example.com",
     "password": "test123"
@@ -33,7 +37,7 @@ curl -X POST http://localhost:3000/api/users/login   -H "Content-Type: applicati
 
 **Respuesta esperada:**
 
-``` json
+```json
 {
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "user": {...}
@@ -42,13 +46,13 @@ curl -X POST http://localhost:3000/api/users/login   -H "Content-Type: applicati
 
 ⚠️ **Guardar el token para endpoints protegidos**
 
-------------------------------------------------------------------------
+---
 
 ## Publications
 
 ### Crear publicación (requiere auth)
 
-``` bash
+```bash
 curl -X POST http://localhost:3000/api/publications   -H "Content-Type: application/json"   -H "Authorization: Bearer TU_TOKEN_AQUI"   -d '{
     "description": "Perdí a mi perro en el parque",
     "creatorUserId": "844e9d5e-1313-4837-aa18-bf63c34df942",
@@ -68,13 +72,13 @@ curl -X POST http://localhost:3000/api/publications   -H "Content-Type: applicat
 
 ### Obtener todas las publicaciones
 
-``` bash
+```bash
 curl http://localhost:3000/api/publications
 ```
 
 ### Obtener publicaciones con filtros
 
-``` bash
+```bash
 curl "http://localhost:3000/api/publications?type=lost"
 curl "http://localhost:3000/api/publications?user=844e9d5e-1313-4837-aa18-bf63c34df942"
 curl "http://localhost:3000/api/publications?age=3"
@@ -84,7 +88,7 @@ curl "http://localhost:3000/api/publications?type=lost&size=Grande&age=3"
 
 ### Obtener publicación por ID
 
-``` bash
+```bash
 curl http://localhost:3000/api/publications/ID_DE_PUBLICACION
 
 Ejemplo:
@@ -94,17 +98,17 @@ curl http://localhost:3000/api/publications/eff2bb49-0571-46eb-9d19-72b3be51341e
 
 ### Desactivar publicación (requiere auth)
 
-``` bash
+```bash
 curl -X DELETE http://localhost:3000/api/publications/ID_DE_PUBLICACION   -H "Authorization: Bearer TU_TOKEN_AQUI"
 ```
 
-------------------------------------------------------------------------
+---
 
 ## Messages (En desarrollo)
 
 ### Crear mensaje (requiere auth)
 
-``` bash
+```bash
 curl -X POST http://localhost:3000/api/messages   -H "Content-Type: application/json"   -H "Authorization: Bearer TU_TOKEN_AQUI"   -d '{
     "publication_id": "123",
     "content": "Vi a esta mascota ayer!"
@@ -113,7 +117,7 @@ curl -X POST http://localhost:3000/api/messages   -H "Content-Type: application/
 
 **Respuesta:**
 
-``` json
+```json
 {
   "message": "🚧 Feature en desarrollo",
   "details": "El sistema de comentarios aún no está implementado",
@@ -123,13 +127,13 @@ curl -X POST http://localhost:3000/api/messages   -H "Content-Type: application/
 
 ### Obtener mensajes de una publicación
 
-``` bash
+```bash
 curl http://localhost:3000/api/messages/publication/ID_PUBLICACION
 ```
 
 ### Actualizar mensaje (requiere auth)
 
-``` bash
+```bash
 curl -X PUT http://localhost:3000/api/messages/ID_MENSAJE   -H "Content-Type: application/json"   -H "Authorization: Bearer TU_TOKEN_AQUI"   -d '{
     "content": "Mensaje actualizado"
   }'
@@ -137,35 +141,35 @@ curl -X PUT http://localhost:3000/api/messages/ID_MENSAJE   -H "Content-Type: ap
 
 ### Eliminar mensaje (requiere auth)
 
-``` bash
+```bash
 curl -X DELETE http://localhost:3000/api/messages/ID_MENSAJE   -H "Authorization: Bearer TU_TOKEN_AQUI"
 ```
 
-------------------------------------------------------------------------
+---
 
 ## Notas importantes
 
 ### Autenticación
 
--   Endpoints marcados con **(requiere auth)** necesitan:
+- Endpoints marcados con **(requiere auth)** necesitan:
 
-        Authorization: Bearer TU_TOKEN_AQUI
+      Authorization: Bearer TU_TOKEN_AQUI
 
--   Token expira a las 2 horas.
+- Token expira a las 2 horas.
 
 ### Formato de datos
 
--   `Content-Type: application/json`
--   Fechas en ISO 8601
--   UUIDs generados automáticamente
+- `Content-Type: application/json`
+- Fechas en ISO 8601
+- UUIDs generados automáticamente
 
 ### Códigos de respuesta
 
--   200 OK
--   201 Created
--   400 Bad Request
--   401 Unauthorized
--   403 Forbidden
--   404 Not Found
--   500 Internal Server Error
--   501 Not Implemented
+- 200 OK
+- 201 Created
+- 400 Bad Request
+- 401 Unauthorized
+- 403 Forbidden
+- 404 Not Found
+- 500 Internal Server Error
+- 501 Not Implemented
