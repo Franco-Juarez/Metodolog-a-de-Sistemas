@@ -1,26 +1,42 @@
-import jwt from 'jsonwebtoken';
+import { Database } from './DataBase.Class';
+import { User } from '@supabase/supabase-js';
 
-// define la estructura del token para tener tipado estricto
-export interface JwtPayload {
-    id: string;
-    role: string;
-}
-
-const JWT_SECRET = process.env.JWT_SECRET || 'michi_secreto_super_seguro';
+const supabase = Database.getInstance().getClient();
 
 export class AuthService {
-    // se generar token tipado
-    static generateJWT(userId: string, role: string): string {
-        const payload: JwtPayload = { id: userId, role };
-        return jwt.sign(payload, JWT_SECRET, { expiresIn: '2h' });
+  static async verifyToken(token: string): Promise<User | null> {
+    try {
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.getUser(token);
+      if (error || !user) {
+        return null;
+      }
+      return user;
+    } catch (error) {
+      console.error('Error verificando token:', error);
+      return null;
     }
+  }
 
-    //verifica y devuelve el payload tipado
-    static verifyToken(token: string): JwtPayload | null {
-        try {
-            return jwt.verify(token, JWT_SECRET) as JwtPayload;
-        } catch (error) {
-            return null;
-        }
+  static async refreshToken(refreshToken: string) {
+    const { data, error } = await supabase.auth.refreshSession({
+      refresh_token: refreshToken,
+    });
+    if (error) {
+      throw new Error(error.message);
     }
+    if (!data.session) {
+      throw new Error('No se pudo refrescar la sesión');
+    }
+    return data.session;
+  }
+
+  static async signOut() {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      throw new Error(error.message);
+    }
+  }
 }

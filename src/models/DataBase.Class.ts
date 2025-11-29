@@ -8,8 +8,13 @@ export class Database {
   private constructor() {
     const supabaseUrl = process.env.SUPABASE_URL!;
     const supabaseKey = process.env.SUPABASE_ANON_KEY!;
-    
-    this.supabase = createClient(supabaseUrl, supabaseKey);
+
+    this.supabase = createClient(supabaseUrl, supabaseKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    });
   }
 
   //metodo para crear o obtener la instancia de la base de datos
@@ -20,9 +25,34 @@ export class Database {
     return Database.instance;
   }
 
-  //metodo get para usar el cliente
+  //metodo get para usar el cliente (sin autenticación de usuario)
   public getClient(): SupabaseClient {
     return this.supabase;
   }
 
+  //metodo para obtener cliente autenticado con el token del usuario
+  public static getAuthenticatedClient(accessToken: string): SupabaseClient {
+    const supabaseUrl = process.env.SUPABASE_URL!;
+    const supabaseKey = process.env.SUPABASE_ANON_KEY!;
+
+    // Crear cliente con configuración para servidor
+    const client = createClient(supabaseUrl, supabaseKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+        detectSessionInUrl: false,
+      },
+      db: {
+        schema: 'public',
+      },
+      global: {
+        headers: {
+          apikey: supabaseKey,
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    });
+
+    return client;
+  }
 }

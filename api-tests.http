@@ -1,0 +1,184 @@
+### Variables
+@baseUrl = http://localhost:3000/api
+@email = test3@ejemplo.com
+@password = test123
+
+# IMPORTANTE: Después de hacer login o register, copiá el access_token de la respuesta
+# y pegalo en la variable de abajo (reemplazá el texto "TU_TOKEN_AQUI")
+@token = TU_TOKEN_AQUI
+# Y también guardá el ID de la publicación que crees para los tests de update/delete
+@publicationId = ID_PUBLICACIÓN
+
+###############################################
+# AUTENTICACIÓN
+###############################################
+
+### 1. Registrar nuevo usuario
+POST {{baseUrl}}/users/register
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### 2. Login
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+###############################################
+# PERFIL DE USUARIO
+###############################################
+
+### 3. Obtener perfil (requiere autenticación)
+GET {{baseUrl}}/users/profile
+Authorization: Bearer {{token}}
+
+### 4. Actualizar perfil (requiere autenticación)
+PUT {{baseUrl}}/users/profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Juan",
+  "lastName": "Perez",
+  "phone": "+54911234567"
+}
+
+###############################################
+# PUBLICACIONES
+###############################################
+
+### 5. Crear publicación (requiere autenticación)
+# IMPORTANTE: Esta ruta crea automáticamente la mascota y la ubicación
+POST {{baseUrl}}/publications
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "description": "Gatito gris perdido en Palermo, responde al nombre de Michi",
+  "publicationType": "lost",
+  "petName": "Michi",
+  "petType": "cat",
+  "petBreed": "Siamés",
+  "petColor": "gris",
+  "petSize": "small",
+  "petAge": "2",
+  "petURL": "https://example.com/michi.jpg",
+  "latitude": -34.5875,
+  "longitude": -58.3974,
+  "reference_address": "Av. Santa Fe 3000, Palermo"
+}
+
+### 6. Obtener todas las publicaciones (público)
+GET {{baseUrl}}/publications
+
+### 7. Obtener publicación por ID (público)
+GET {{baseUrl}}/publications/{{publicationId}}
+
+### 8. Obtener mis publicaciones (requiere autenticación)
+GET {{baseUrl}}/users/me/publications
+Authorization: Bearer {{token}}
+
+### 9. Actualizar publicación (requiere autenticación)
+PUT {{baseUrl}}/publications/{{publicationId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "description": "Gatito gris perdido - ACTUALIZADO: Visto en Plaza Italia"
+}
+
+### 10. Desactivar/Eliminar publicación (requiere autenticación)
+DELETE {{baseUrl}}/publications/{{publicationId}}
+Authorization: Bearer {{token}}
+
+###############################################
+# LOGOUT
+###############################################
+
+### 11. Cerrar sesión (requiere autenticación)
+POST {{baseUrl}}/users/logout
+Authorization: Bearer {{token}}
+
+###############################################
+# TESTS DE ERRORES
+###############################################
+
+### Test: Acceder sin token (debe fallar con 401)
+GET {{baseUrl}}/users/profile
+
+### Test: Acceder con token inválido (debe fallar con 403)
+GET {{baseUrl}}/users/profile
+Authorization: Bearer token_invalido_12345
+
+### Test: Login con credenciales incorrectas
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "password_incorrecta"
+}
+
+### Test: Registro con email inválido
+POST {{baseUrl}}/users/register
+Content-Type: application/json
+
+{
+  "email": "email-invalido",
+  "password": "{{password}}"
+}
+
+###############################################
+# TIPOS DE PUBLICACIÓN VÁLIDOS
+###############################################
+# "lost" - Mascota perdida
+# "found" - Mascota encontrada
+# "sighted" - Mascota avistada
+# "adoption" - Mascota en adopción
+
+### Ejemplo: Crear publicación de adopción
+POST {{baseUrl}}/publications
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "description": "Gatita en adopción, muy cariñosa y juguetona",
+  "publicationType": "adoption",
+  "petName": "Luna",
+  "petType": "cat",
+  "petBreed": "Común",
+  "petColor": "naranja",
+  "petSize": "medium",
+  "petAge": "1",
+  "petURL": "https://example.com/luna.jpg",
+  "latitude": -34.5875,
+  "longitude": -58.3974,
+  "reference_address": "Palermo, CABA"
+}
+
+### Ejemplo: Crear publicación de mascota encontrada
+POST {{baseUrl}}/publications
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "description": "Perro encontrado en Recoleta, parece perdido",
+  "publicationType": "found",
+  "petName": "Desconocido",
+  "petType": "dog",
+  "petBreed": "Mestizo",
+  "petColor": "marrón",
+  "petSize": "large",
+  "petAge": "3",
+  "petURL": "https://example.com/perro.jpg",
+  "latitude": -34.5889,
+  "longitude": -58.3930,
+  "reference_address": "Recoleta, CABA"
+}

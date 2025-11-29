@@ -1,9 +1,24 @@
-import { Publication } from "./Publication.Class";
-import { IPublication } from "./Publication.interface";
+import { Publication } from './Publication.Class';
 
 export class Lost extends Publication {
-    constructor(data: IPublication) {
-        super(data); 
-        this.publicationType = 'lost'; 
-    }
+  constructor(
+    id: string,
+    createdAt: string,
+    description: string,
+    isActive: boolean,
+    locationId: string,
+    creatorUserId: string,
+    petId: string
+  ) {
+    super(
+      id,
+      createdAt,
+      description,
+      isActive,
+      locationId,
+      creatorUserId,
+      petId
+    );
+    this.publicationType = 'lost';
+  }
 }
